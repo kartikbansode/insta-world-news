@@ -9,6 +9,7 @@ FONT_PATH = "assets/Arial-Bold.ttf"  # add this font file
 WIDTH = 2160
 HEIGHT = 2160
 
+
 def auto_font_size(text, max_width, max_size=152, min_size=84):
     img = Image.new("RGB", (3000, 3000))
     draw = ImageDraw.Draw(img)
@@ -21,11 +22,13 @@ def auto_font_size(text, max_width, max_size=152, min_size=84):
             return size
     return min_size
 
-def make_image(headline, image_url):
+
+def make_image(headline, image_url, category="World"):
     with open(TEMPLATE_PATH, "r", encoding="utf-8") as f:
         template = f.read()
 
     headline = headline.upper()
+    category = category.upper()
 
     max_text_width = WIDTH - 160*2 - 20 - 50
     font_size = auto_font_size(headline, max_text_width)
@@ -37,6 +40,8 @@ def make_image(headline, image_url):
 
     with open("render.html", "w", encoding="utf-8") as f:
         f.write(html)
+
+    # rest unchanged…
 
     with sync_playwright() as p:
         browser = p.chromium.launch()
