@@ -6,7 +6,7 @@ from io import BytesIO
 
 WIDTH = HEIGHT = 1080
 
-def load_image_from_url(url):
+def load_image(url):
     try:
         r = requests.get(url, timeout=10)
         img = Image.open(BytesIO(r.content)).convert("RGB")
@@ -15,68 +15,61 @@ def load_image_from_url(url):
         return None
 
 def make_image(title, image_url=None, category="World"):
-    # Load background image
+    # Try to load background image
     bg = None
     if image_url:
-        bg = load_image_from_url(image_url)
+        bg = load_image(image_url)
 
     if bg:
         bg = bg.resize((WIDTH, HEIGHT))
         img = bg
     else:
-        img = Image.new("RGB", (WIDTH, HEIGHT), (30, 30, 30))
+        img = Image.new("RGB", (WIDTH, HEIGHT), (25, 25, 25))
 
-    draw = ImageDraw.Draw(img)
-
-    # Dark gradient overlay
-    overlay = Image.new("RGBA", (WIDTH, HEIGHT), (0, 0, 0, 0))
-    o_draw = ImageDraw.Draw(overlay)
-
-    for i in range(HEIGHT):
-        alpha = int(180 * (i / HEIGHT))
-        o_draw.line((0, i, WIDTH, i), fill=(0, 0, 0, alpha))
-
+    # Add dark overlay
+    overlay = Image.new("RGBA", (WIDTH, HEIGHT), (0, 0, 0, 160))
     img = Image.alpha_composite(img.convert("RGBA"), overlay).convert("RGB")
+
     draw = ImageDraw.Draw(img)
 
-    # Fonts
+    # Fonts (BIG)
     try:
-        font_big = ImageFont.truetype("assets/fonts/arial.ttf", 64)
-        font_small = ImageFont.truetype("assets/fonts/arial.ttf", 34)
-        font_tag = ImageFont.truetype("assets/fonts/arial.ttf", 38)
+        font_head = ImageFont.truetype("assets/fonts/arial.ttf", 90)
+        font_tag = ImageFont.truetype("assets/fonts/arial.ttf", 48)
+        font_brand = ImageFont.truetype("assets/fonts/arial.ttf", 40)
     except:
-        font_big = ImageFont.load_default()
-        font_small = ImageFont.load_default()
+        font_head = ImageFont.load_default()
         font_tag = ImageFont.load_default()
+        font_brand = ImageFont.load_default()
 
     padding = 60
 
-    # Category badge
-    tag_text = category.upper()
-    bbox = draw.textbbox((0, 0), tag_text, font=font_tag)
-    tw = bbox[2] - bbox[0]
-    th = bbox[3] - bbox[1]
+    # Category badge (top-left)
+    tag = category.upper()
+    tb = draw.textbbox((0, 0), tag, font=font_tag)
+    tw = tb[2] - tb[0]
+    th = tb[3] - tb[1]
 
     draw.rectangle(
         (padding - 20, padding - 15, padding + tw + 20, padding + th + 15),
-        fill=(200, 0, 0)
+        fill=(220, 0, 0)
     )
-    draw.text((padding, padding), tag_text, fill="white", font=font_tag)
+    draw.text((padding, padding), tag, fill="white", font=font_tag)
 
-    # Headline at bottom
-    wrapped = textwrap.fill(title.upper(), width=28)
-    hbbox = draw.multiline_textbbox((0, 0), wrapped, font=font_big)
-    hw = hbbox[2] - hbbox[0]
-    hh = hbbox[3] - hbbox[1]
+    # Headline (BOTTOM, VERY BIG)
+    wrapped = textwrap.fill(title.upper(), width=24)
+    hb = draw.multiline_textbbox((0, 0), wrapped, font=font_head)
+    hw = hb[2] - hb[0]
+    hh = hb[3] - hb[1]
 
     x = padding
-    y = HEIGHT - hh - 140
+    y = HEIGHT - hh - 150
 
-    draw.multiline_text((x, y), wrapped, fill="white", font=font_big, align="left")
+    draw.multiline_text((x, y), wrapped, fill="white", font=font_head, align="left")
 
-    # Branding
+    # Branding bottom-left
     brand = "Around World  @aroundworldlive"
-    draw.text((padding, HEIGHT - 70), brand, fill="white", font=font_small)
+    draw.text((padding, HEIGHT - 60), brand, fill="white", font=font_brand)
 
     os.makedirs("output", exist_ok=True)
     path = "output/latest.png"
