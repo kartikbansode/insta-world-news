@@ -1,15 +1,28 @@
 from PIL import Image, ImageDraw, ImageFont
 import textwrap
 import os
+import requests
+from io import BytesIO
 
 WIDTH = HEIGHT = 1080
 
-def make_image(title):
-    # Create dark background
-    img = Image.new("RGB", (WIDTH, HEIGHT), color=(20, 20, 20))
-    draw = ImageDraw.Draw(img)
+def load_bg(image_url):
+    try:
+        r = requests.get(image_url, timeout=10)
+        img = Image.open(BytesIO(r.content)).convert("RGB")
+        return img.resize((WIDTH, HEIGHT))
+    except:
+        return Image.new("RGB", (WIDTH, HEIGHT), (20, 20, 20))
 
-    # Load fonts (fallback if not found)
+def make_image(title, image_url=None):
+    bg = load_bg(image_url)
+    draw = ImageDraw.Draw(bg)
+
+    # Dark overlay
+    overlay = Image.new("RGBA", (WIDTH, HEIGHT), (0, 0, 0, 160))
+    bg = Image.alpha_composite(bg.convert("RGBA"), overlay)
+    draw = ImageDraw.Draw(bg)
+
     try:
         font_big = ImageFont.truetype("assets/fonts/arial.ttf", 64)
         font_small = ImageFont.truetype("assets/fonts/arial.ttf", 36)
@@ -18,18 +31,14 @@ def make_image(title):
         font_small = ImageFont.load_default()
 
     # Top red bar
-    draw.rectangle((0, 0, WIDTH, 120), fill=(200, 0, 0))
+    draw.rectangle((0, 0, WIDTH, 120), fill=(200, 0, 0, 255))
     draw.text((40, 30), "BREAKING NEWS", font=font_small, fill="white")
 
-    # Wrap headline
     wrapped = textwrap.fill(title.upper(), width=22)
-
-    # Calculate text size (new Pillow method)
     bbox = draw.multiline_textbbox((0, 0), wrapped, font=font_big)
     w = bbox[2] - bbox[0]
     h = bbox[3] - bbox[1]
 
-    # Draw headline centered
     draw.multiline_text(
         ((WIDTH - w) / 2, (HEIGHT - h) / 2),
         wrapped,
@@ -38,7 +47,6 @@ def make_image(title):
         align="center"
     )
 
-    # Footer branding
     draw.text(
         (40, HEIGHT - 80),
         "Around World  @aroundworldlive",
@@ -46,9 +54,8 @@ def make_image(title):
         fill="white"
     )
 
-    # Save output
     os.makedirs("output", exist_ok=True)
     path = "output/latest.png"
-    img.save(path)
+    bg.convert("RGB").save(path)
 
     return path

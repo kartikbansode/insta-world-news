@@ -8,7 +8,7 @@ def main():
         return
 
     print("Headline:", news["title"])
-    make_image(news["title"])
+    make_image(news["title"], news.get("image"))
 
 if __name__ == "__main__":
     main()
