@@ -5,6 +5,7 @@ import os
 
 LAST_FILE = "data/last.txt"
 
+
 def main():
     news = get_latest_news()
     if not news:
@@ -26,16 +27,17 @@ def main():
 
     print("New headline:", title)
 
-    # Make image with category
-    path = make_image(title, news.get("image"), news.get("category", "World"))
 
-    # Copy to root for GitHub Pages
-    shutil.copy(path, "latest.png")
+path = make_image(title, news.get("image"), news.get("category", "World"))
+print("Image generated at:", path)
 
-    # Save last title
-    os.makedirs("data", exist_ok=True)
-    with open(LAST_FILE, "w", encoding="utf-8") as f:
-        f.write(title)
+# Make image with category
+path = make_image(title, news.get("image"), news.get("category", "World"))
+
+# Save last title
+os.makedirs("data", exist_ok=True)
+with open(LAST_FILE, "w", encoding="utf-8") as f:
+    f.write(title)
 
 if __name__ == "__main__":
     main()
