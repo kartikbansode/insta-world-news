@@ -56,3 +56,5 @@ def make_image(headline, image_url, category="World"):
 
     os.remove("temp.png")
     os.remove("render.html")
+
+    return OUTPUT_PATH
