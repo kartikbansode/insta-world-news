@@ -4,11 +4,10 @@ from playwright.sync_api import sync_playwright
 
 TEMPLATE_PATH = "src/template.html"
 OUTPUT_PATH = "latest.png"
-FONT_PATH = "assets/Arial-Bold.ttf"  # add this font file
+FONT_PATH = "assets/Arial-Bold.ttf"
 
 WIDTH = 2160
 HEIGHT = 2160
-
 
 def auto_font_size(text, max_width, max_size=152, min_size=84):
     img = Image.new("RGB", (3000, 3000))
@@ -22,26 +21,22 @@ def auto_font_size(text, max_width, max_size=152, min_size=84):
             return size
     return min_size
 
-
 def make_image(headline, image_url, category="World"):
     with open(TEMPLATE_PATH, "r", encoding="utf-8") as f:
         template = f.read()
 
     headline = headline.upper()
-    category = category.upper()
 
     max_text_width = WIDTH - 160*2 - 20 - 50
     font_size = auto_font_size(headline, max_text_width)
 
     html = template \
         .replace("{{HEADLINE}}", headline) \
-        .replace("{{IMAGE_URL}}", image_url) \
+        .replace("{{IMAGE_URL}}", image_url or "") \
         .replace("{{FONT_SIZE}}", str(font_size))
 
     with open("render.html", "w", encoding="utf-8") as f:
         f.write(html)
-
-    # rest unchanged…
 
     with sync_playwright() as p:
         browser = p.chromium.launch()
