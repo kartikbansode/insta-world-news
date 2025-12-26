@@ -1,6 +1,8 @@
 name: Auto News Post
 
 on:
+  schedule:
+    - cron: "0 * * * *"   # every hour
   workflow_dispatch:
 
 jobs:
@@ -16,7 +18,11 @@ jobs:
 
       - run: pip install -r requirements.txt
 
-      - run: python src/main.py
+      - name: Run bot
+        env:
+          IG_USERNAME: ${{ secrets.IG_USERNAME }}
+          IG_PASSWORD: ${{ secrets.IG_PASSWORD }}
+        run: python src/main.py
 
       - name: Commit latest image
         run: |

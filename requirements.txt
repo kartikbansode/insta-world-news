@@ -3,3 +3,4 @@ newspaper3k
 requests
 pillow
 lxml_html_clean
+instagrapi
