@@ -15,7 +15,7 @@ def load_image(url):
         return None
 
 def make_image(title, image_url=None, category="World"):
-    # Try to load background image
+    # Load background image
     bg = None
     if image_url:
         bg = load_image(image_url)
@@ -24,52 +24,56 @@ def make_image(title, image_url=None, category="World"):
         bg = bg.resize((WIDTH, HEIGHT))
         img = bg
     else:
-        img = Image.new("RGB", (WIDTH, HEIGHT), (25, 25, 25))
-
-    # Add dark overlay
-    overlay = Image.new("RGBA", (WIDTH, HEIGHT), (0, 0, 0, 160))
-    img = Image.alpha_composite(img.convert("RGBA"), overlay).convert("RGB")
+        img = Image.new("RGB", (WIDTH, HEIGHT), (20, 20, 20))
 
     draw = ImageDraw.Draw(img)
 
-    # Fonts (BIG)
+    # Bottom dark gradient overlay (for text readability)
+    overlay = Image.new("RGBA", (WIDTH, HEIGHT), (0, 0, 0, 0))
+    o_draw = ImageDraw.Draw(overlay)
+    for y in range(HEIGHT):
+        if y > HEIGHT * 0.5:
+            alpha = int(220 * ((y - HEIGHT * 0.5) / (HEIGHT * 0.5)))
+            o_draw.line((0, y, WIDTH, y), fill=(0, 0, 0, alpha))
+
+    img = Image.alpha_composite(img.convert("RGBA"), overlay).convert("RGB")
+    draw = ImageDraw.Draw(img)
+
+    # Fonts (VERY BIG)
     try:
-        font_head = ImageFont.truetype("assets/fonts/arial.ttf", 90)
-        font_tag = ImageFont.truetype("assets/fonts/arial.ttf", 48)
-        font_brand = ImageFont.truetype("assets/fonts/arial.ttf", 40)
+        font_head = ImageFont.truetype("assets/fonts/arial.ttf", 96)
+        font_tag = ImageFont.truetype("assets/fonts/arial.ttf", 42)
+        font_small = ImageFont.truetype("assets/fonts/arial.ttf", 34)
     except:
         font_head = ImageFont.load_default()
         font_tag = ImageFont.load_default()
-        font_brand = ImageFont.load_default()
+        font_small = ImageFont.load_default()
 
     padding = 60
 
-    # Category badge (top-left)
-    tag = category.upper()
-    tb = draw.textbbox((0, 0), tag, font=font_tag)
-    tw = tb[2] - tb[0]
-    th = tb[3] - tb[1]
+    # 🔴 Top red BREAKING NEWS bar
+    bar_h = 90
+    draw.rectangle((0, 0, WIDTH, bar_h), fill=(210, 0, 0))
+    draw.text((padding, 25), "BREAKING NEWS", font=font_tag, fill="white")
 
-    draw.rectangle(
-        (padding - 20, padding - 15, padding + tw + 20, padding + th + 15),
-        fill=(220, 0, 0)
-    )
-    draw.text((padding, padding), tag, fill="white", font=font_tag)
-
-    # Headline (BOTTOM, VERY BIG)
-    wrapped = textwrap.fill(title.upper(), width=24)
-    hb = draw.multiline_textbbox((0, 0), wrapped, font=font_head)
-    hw = hb[2] - hb[0]
-    hh = hb[3] - hb[1]
+    # 📰 Headline (big, center-bottom)
+    wrapped = textwrap.fill(title.upper(), width=26)
+    bbox = draw.multiline_textbbox((0, 0), wrapped, font=font_head)
+    w = bbox[2] - bbox[0]
+    h = bbox[3] - bbox[1]
 
     x = padding
-    y = HEIGHT - hh - 150
+    y = HEIGHT - h - 180
 
     draw.multiline_text((x, y), wrapped, fill="white", font=font_head, align="left")
 
-    # Branding bottom-left
+    # 🧾 Source text (small under headline)
+    source_text = f"Source: {category}"
+    draw.text((padding, y + h + 15), source_text, fill="white", font=font_small)
+
+    # 🏷️ Footer branding
     brand = "Around World  @aroundworldlive"
-    draw.text((padding, HEIGHT - 60), brand, fill="white", font=font_brand)
+    draw.text((padding, HEIGHT - 60), brand, fill="white", font=font_small)
 
     os.makedirs("output", exist_ok=True)
     path = "output/latest.png"
