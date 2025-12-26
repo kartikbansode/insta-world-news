@@ -1,74 +1,123 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8" />
+<title>Breaking News</title>
 <style>
-body {
-  margin: 0;
-  width: 1080px;
-  height: 1080px;
-  font-family: Arial, sans-serif;
-}
-.card {
-  position: relative;
-  width: 1080px;
-  height: 1080px;
-  background-image: url('{{IMAGE_URL}}');
-  background-size: cover;
-  background-position: center;
-}
-.overlay {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  height: 65%;
-  background: linear-gradient(
-    to top,
-    rgba(0,0,0,0.95) 0%,
-    rgba(0,0,0,0.75) 40%,
-    rgba(0,0,0,0.4) 65%,
-    rgba(0,0,0,0.0) 100%
-  );
-}
+  html, body {
+    margin: 0;
+    padding: 0;
+    width: 1080px;
+    height: 1080px;
+    font-family: Arial, Helvetica, sans-serif;
+    background: #000;
+  }
 
-.topbar {
-  position: absolute;
-  top: 0;
-  width: 100%;
-  height: 90px;
-  background: #d00000;
-  color: white;
-  display: flex;
-  align-items: center;
-  padding-left: 60px;
-  font-size: 42px;
-  font-weight: bold;
-}
-.headline {
-  position: absolute;
-  bottom: 200px;
-  left: 60px;
-  right: 60px;
-  color: white;
-  font-size: 86px;
-  font-weight: bold;
-  line-height: 1.1;
-}
-.footer {
-  position: absolute;
-  bottom: 60px;
-  left: 60px;
-  color: white;
-  font-size: 34px;
-}
+  .container {
+    position: relative;
+    width: 1080px;
+    height: 1080px;
+    overflow: hidden;
+  }
+
+  .bg {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* 🔴 TOP BREAKING BAR */
+  .top-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 120px;
+    background: #d50000;
+    display: flex;
+    align-items: center;
+    padding-left: 60px;
+    box-sizing: border-box;
+  }
+
+  .top-bar span {
+    color: #fff;
+    font-size: 54px;
+    font-weight: 900;
+    letter-spacing: 2px;
+  }
+
+  /* 🌑 STRONG FADE OVERLAY */
+  .overlay {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 70%;
+    background: linear-gradient(
+      to top,
+      rgba(0,0,0,0.98) 0%,
+      rgba(0,0,0,0.90) 30%,
+      rgba(0,0,0,0.75) 50%,
+      rgba(0,0,0,0.45) 65%,
+      rgba(0,0,0,0.15) 80%,
+      rgba(0,0,0,0.0) 100%
+    );
+  }
+
+  /* 📰 LEFT WHITE ACCENT */
+  .accent {
+    position: absolute;
+    bottom: 140px;
+    left: 50px;
+    width: 10px;
+    height: 420px;
+    background: #fff;
+  }
+
+  /* 📝 HEADLINE */
+  .headline {
+    position: absolute;
+    bottom: 260px;
+    left: 80px;
+    right: 80px;
+    color: #fff;
+    font-size: 78px;
+    font-weight: 900;
+    line-height: 1.1;
+    text-transform: uppercase;
+    text-shadow: 0 4px 20px rgba(0,0,0,0.8);
+  }
+
+  /* 🔗 FOOTER / HANDLE */
+  .footer {
+    position: absolute;
+    bottom: 80px;
+    left: 80px;
+    color: #ddd;
+    font-size: 30px;
+    letter-spacing: 0.5px;
+  }
 </style>
 </head>
 <body>
-  <div class="card">
-    <div class="topbar">BREAKING NEWS</div>
+  <div class="container">
+    <img class="bg" src="{{IMAGE_URL}}" />
+
+    <div class="top-bar">
+      <span>BREAKING NEWS</span>
+    </div>
+
     <div class="overlay"></div>
-    <div class="headline">{{HEADLINE}}</div>
-    <div class="footer">Around World  @aroundworldlive</div>
+    <div class="accent"></div>
+
+    <div class="headline">
+      {{HEADLINE}}
+    </div>
+
+    <div class="footer">
+      Around World @aroundworldlive
+    </div>
   </div>
 </body>
 </html>
