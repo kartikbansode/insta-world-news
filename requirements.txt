@@ -4,3 +4,4 @@ requests
 pillow
 lxml_html_clean
 instagrapi
+playwright

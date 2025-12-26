@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<style>
+body {
+  margin: 0;
+  width: 1080px;
+  height: 1080px;
+  font-family: Arial, sans-serif;
+}
+.card {
+  position: relative;
+  width: 1080px;
+  height: 1080px;
+  background-image: url('{{IMAGE_URL}}');
+  background-size: cover;
+  background-position: center;
+}
+.overlay {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 55%;
+  background: linear-gradient(to top, rgba(0,0,0,0.85), transparent);
+}
+.topbar {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 90px;
+  background: #d00000;
+  color: white;
+  display: flex;
+  align-items: center;
+  padding-left: 60px;
+  font-size: 42px;
+  font-weight: bold;
+}
+.headline {
+  position: absolute;
+  bottom: 200px;
+  left: 60px;
+  right: 60px;
+  color: white;
+  font-size: 86px;
+  font-weight: bold;
+  line-height: 1.1;
+}
+.footer {
+  position: absolute;
+  bottom: 60px;
+  left: 60px;
+  color: white;
+  font-size: 34px;
+}
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="topbar">BREAKING NEWS</div>
+    <div class="overlay"></div>
+    <div class="headline">{{HEADLINE}}</div>
+    <div class="footer">Around World  @aroundworldlive</div>
+  </div>
+</body>
+</html>

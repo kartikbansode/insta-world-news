@@ -2,7 +2,7 @@ name: Auto News Post
 
 on:
   schedule:
-    - cron: "0 * * * *"   # every hour
+    - cron: "0 * * * *" # every hour
   workflow_dispatch:
 
 jobs:
@@ -17,6 +17,9 @@ jobs:
           python-version: "3.10"
 
       - run: pip install -r requirements.txt
+
+      - name: Install Playwright browsers
+        run: playwright install chromium
 
       - name: Run bot
         env:
