@@ -1,4 +1,4 @@
-name: Test News Image
+name: Auto News Post
 
 on:
   workflow_dispatch:
@@ -18,8 +18,10 @@ jobs:
 
       - run: python src/main.py
 
-      - name: Upload image
-        uses: actions/upload-artifact@v4
-        with:
-          name: latest-post
-          path: output/latest.png
+      - name: Commit latest image
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add latest.png
+          git commit -m "Update latest news image" || echo "No changes"
+          git push
